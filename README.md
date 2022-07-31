@@ -63,4 +63,4 @@ We include stdlib and server.h
 <stdlib.h>
 ```
 
-This would generate server.c
+This generated some files in build/
