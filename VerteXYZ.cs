@@ -10,7 +10,7 @@ using System.Threading.Tasks;
 
 namespace ModernBusinessContinuity
 {
-    // Propritary LICENSE: https://github.com/scriptmaster/ModernBusinessContinuity/commits/master
+    // Proprietary LICENSE: https://github.com/scriptmaster/ModernBusinessContinuity/commits/master
     public class VerteXYZ
     {
         public string[] CodeLangTamil { get; set; } = new[] { "அ", "த" };
