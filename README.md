@@ -1,6 +1,6 @@
 # ModernBusinessContinuity
 
-﻿வணக்கம்
+வணக்கம்
 ---
 
 ### POWERFUL SPECIFICATIONS
@@ -18,10 +18,16 @@ From here lets generate `create types.c`:
 ```
 எண் க
 விகிதம் ப
-முதல் செயல்
+```
+
+```
+செயல் புரிந்துதல்
 	எண் கண்
 	விகிதம் படி
 ```
+
+The word செயல் is interchangeable.
+
 
 Back to `append main.c`
 We check if cli was given with args or not.
