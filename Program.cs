@@ -55,8 +55,6 @@ namespace ModernBusinessContinuity
             {
                 // 
             }
-
-            Console.ReadLine();
         }
 
     }
