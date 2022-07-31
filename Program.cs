@@ -37,14 +37,16 @@ namespace ModernBusinessContinuity
                 if(Directory.Exists(config.SourceDirs))
                 {
                     var dirs = config.SourceDirs.Split(',', ';', ' ');
-                    foreach(var dir in dirs)
+                    config.BuildDir = Path.GetFullPath(config.BuildDir);
+                    if (!Directory.Exists(config.BuildDir)) Directory.CreateDirectory(config.BuildDir);
+                    foreach (var dir in dirs)
                     {
                         string[] fileEntries = Directory.GetFiles(dir);
                         var vXYZ = new VerteXYZ();
 
                         foreach (var file in fileEntries)
                         {
-                            vXYZ.GenerateFile(file);
+                            vXYZ.GenerateFile(file, config.BuildDir);
                         }
                     }
                 }
@@ -58,7 +60,6 @@ namespace ModernBusinessContinuity
                 // 
             }
         }
-
     }
 
     /// <summary>
@@ -67,6 +68,7 @@ namespace ModernBusinessContinuity
     public class Config
     {
         public string SourceDirs { get; set; } = "src/";
+        public string BuildDir { get; set; } = "build/";
         public string main { get; set; } = "முதல்.அ.md";
     }
 }

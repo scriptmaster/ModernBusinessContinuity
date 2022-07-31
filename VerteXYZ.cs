@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 
 namespace ModernBusinessContinuity
@@ -12,23 +13,24 @@ namespace ModernBusinessContinuity
     // Propritary LICENSE: https://github.com/scriptmaster/ModernBusinessContinuity/commits/master
     public class VerteXYZ
     {
-        public string[] CodeLangTamil { get; set; } = new[] { "அ", "த", "" };
-        public string[] CodeLangArabic { get; set; } = new[] { "ع", "ا", "عربي" };
+        public string[] CodeLangTamil { get; set; } = new[] { "அ", "த" };
+        public string[] CodeLangArabic { get; set; } = new[] { "ع", "ا", "أ", "عربي" };
         public string[] CodeLangEnglish { get; set; } = new[] { "en" };
 
         private string backfillFileName = "main.c";
 
-        public void GenerateFile(string fromFile)
+        public void GenerateFile(string fromFile, string toDir)
         {
             if (!File.Exists(fromFile)) return;
 
             Dictionary<string, GeneratedFile> files = new Dictionary<string, GeneratedFile>();
-            string currentFileName = string.Empty;
+            string actionFileName = string.Empty;
 
-            string codeLang = string.Empty; // set default by choosing "" in the code langs above; // can come from configs also.
+            string codeLang = DetectCodeLang(); // set default by choosing "" in the code langs above;
+            // can also be from configs or inference:
 
             var fileContents = File.ReadAllText(fromFile);
-            var fileDir = Path.GetDirectoryName(fromFile) ?? Path.GetFullPath(".");
+            // var fileDir = Path.GetDirectoryName(fromFile) ?? Path.GetFullPath(".");
 
             var html = Markdown.ToHtml(fileContents);
             Console.WriteLine("html: " + html);
@@ -50,14 +52,18 @@ namespace ModernBusinessContinuity
                                 var content = (line as CodeInline)?.Content.Trim() ?? string.Empty;
                                 Console.WriteLine("Check command: " + content);
 
-                                if(content.EndsWith(".c"))
+                                if(content.EndsWith(".c") || content.EndsWith(".cs"))
                                 {
                                     var cmd = content.Split(' ');
                                     var fileName = cmd[cmd.Length - 1];
                                     var action = cmd.Length > 1 ? cmd[0] : "append";
-                                    if (string.IsNullOrEmpty(currentFileName) || !files.ContainsKey(currentFileName))
+
+                                    if (!Regex.IsMatch(fileName, "^\\w+.c[s]?$")) continue;
+                                    actionFileName = fileName;
+
+                                    if (string.IsNullOrEmpty(actionFileName) || !files.ContainsKey(actionFileName))
                                     {
-                                        files[fileName] = new GeneratedFile(fileDir, fileName);
+                                        files[fileName] = new GeneratedFile(toDir, fileName);
                                     }
                                     else
                                     {
@@ -73,22 +79,31 @@ namespace ModernBusinessContinuity
 
                         foreach (var line in fencedCodeBlock.Lines)
                         {
-                            if(string.IsNullOrEmpty(currentFileName) || !files.ContainsKey(currentFileName))
+                            if (string.IsNullOrEmpty(line != null? line.ToString().Trim(): string.Empty)) continue;
+                            Console.WriteLine("Code Line: " + line.ToString());
+
+                            if (string.IsNullOrEmpty(actionFileName) || !files.ContainsKey(actionFileName))
                             {
-                                files[backfillFileName] = new GeneratedFile(fileDir, backfillFileName); // if no file was specified
+                                actionFileName = backfillFileName;
+                                files[actionFileName] = new GeneratedFile(toDir, actionFileName); // if no file was specified
                             }
 
-                            var genCode = parseLang(codeLang, files[currentFileName], line?.ToString() ?? string.Empty);
-                            files[currentFileName].doAction(genCode);
-
-                            Console.WriteLine("Code Line: " + line.ToString());
+                            var genCode = ParseLang(codeLang, files[actionFileName], line?.ToString() ?? string.Empty);
+                            files[actionFileName].doAction(genCode);
                         }
                         break;
                 }
             }
         }
 
-        public string parseLang(string fromLang, GeneratedFile toLangFileContext, string code)
+        public string DetectCodeLang(string fileName)
+        {
+            if (this.CodeLangTamil.Where(ext => fileName.EndsWith("." + ext) || fileName.EndsWith("." + ext + ".md")).Count() > 0) return this.CodeLangTamil[0];
+            if (this.CodeLangArabic.Where(ext => fileName.EndsWith("." + ext) || fileName.EndsWith("." + ext + ".md")).Count() > 0) return this.CodeLangArabic[0];
+            return string.Empty;
+        }
+
+        public string ParseLang(string fromLang, GeneratedFile toLangFileContext, string code)
         {
             if(this.CodeLangTamil.Contains(fromLang))
             {
@@ -124,7 +139,7 @@ namespace ModernBusinessContinuity
         public string Directory { get; }
         public string FileName { get; set; } = string.Empty;
         public string Action { get; set; } = "create";
-        public string Content { get; set; } = string.Empty;
+        public StringBuilder Content { get; set; } = new StringBuilder();
 
         // public string Lang { get; set; } = "c"; // c18
 
@@ -135,16 +150,22 @@ namespace ModernBusinessContinuity
             {
                 // if (File.Exists(FileName)) File.Move(FileName, );
                 // overwrite than move - you can always regenerate on a different dir
-                File.WriteAllText(FileName, string.Empty);
+                // File.WriteAllText(FileName, string.Empty);
+                Content = new StringBuilder(genCode, 1024); // 1KB
                 Action = "append";
             }
 
             if (Action == "append")
             {
-                File.AppendAllText(FileName, genCode);
+                // File.AppendAllText(FileName, genCode);
                 // it is okay to not use stream writer and close fd at every op. Can be optimized in vNext
+                Content.AppendLine(genCode);
             }
         }
 
+        public void WriteAllText()
+        {
+            File.WriteAllText(Path.Join(Directory, FileName), Content.ToString());
+        }
     }
 }
