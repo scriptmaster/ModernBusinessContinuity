@@ -28,23 +28,11 @@ From here lets generate `create types.c`:
 
 The word செயல் is interchangeable.
 
-
-Back to `append main.c`
-We check if cli was given with args or not.
 ```
-	if(argc > 1) {
-		s = server_new(argv[1]);
-	} else {
-		s = server_new("kingdom.json");
-	}
+	web_start(s);
 ```
 
-
-```
-	server_start(s);
-```
-
-If you want to add some debugging at the start
+If you want to add conditionals at the start
 ```
 ...first
 #ifdef DEBUG
@@ -60,4 +48,3 @@ If you like to include stdlib and server.h
 ```
 
 Generates build/
-

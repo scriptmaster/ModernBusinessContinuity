@@ -38,7 +38,9 @@ namespace ModernBusinessContinuity
                 {
                     var dirs = config.SourceDirs.Split(',', ';', ' ');
                     config.BuildDir = Path.GetFullPath(config.BuildDir);
+
                     if (!Directory.Exists(config.BuildDir)) Directory.CreateDirectory(config.BuildDir);
+
                     foreach (var dir in dirs)
                     {
                         string[] fileEntries = Directory.GetFiles(dir);

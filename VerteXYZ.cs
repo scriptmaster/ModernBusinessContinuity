@@ -79,8 +79,11 @@ namespace ModernBusinessContinuity
 
                         foreach (var line in fencedCodeBlock.Lines)
                         {
-                            if (string.IsNullOrEmpty(line != null? line.ToString().Trim(): string.Empty)) continue;
-                            Console.WriteLine("Code Line: " + line.ToString());
+                            if (line == null || string.IsNullOrEmpty(line.ToString() ?? string.Empty)) continue;
+                            var codeLine = (line.ToString() ?? string.Empty).Trim();
+
+                            if (string.IsNullOrEmpty(codeLine)) continue;
+                            Console.WriteLine("Code Line: " + codeLine);
 
                             if (string.IsNullOrEmpty(actionFileName) || !files.ContainsKey(actionFileName))
                             {
@@ -88,7 +91,7 @@ namespace ModernBusinessContinuity
                                 files[actionFileName] = new GeneratedFile(toDir, actionFileName); // if no file was specified
                             }
 
-                            var genCode = ParseLang(codeLang, files[actionFileName], line?.ToString() ?? string.Empty);
+                            var genCode = ParseLang(codeLang, files[actionFileName], codeLine);
                             files[actionFileName].doAction(genCode);
                         }
                         break;
@@ -161,18 +164,17 @@ namespace ModernBusinessContinuity
         {
             if(Action == "create")
             {
-                // if (File.Exists(FileName)) File.Move(FileName, );
-                // overwrite than move - you can always regenerate on a different dir
-                // File.WriteAllText(FileName, string.Empty);
                 Content = new StringBuilder(1024); // 1KB
                 Action = "append";
             }
 
             if (Action == "append")
             {
-                // File.AppendAllText(FileName, genCode);
-                // it is okay to not use stream writer and close fd at every op. Can be optimized in vNext
                 Content.AppendLine(genCode);
+            }
+            else if (Action == "prepend")
+            {
+                Content.Insert(0, genCode);
             }
         }
 
