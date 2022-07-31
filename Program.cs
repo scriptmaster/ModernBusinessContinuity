@@ -40,9 +40,11 @@ namespace ModernBusinessContinuity
                     foreach(var dir in dirs)
                     {
                         string[] fileEntries = Directory.GetFiles(dir);
+                        var vXYZ = new VerteXYZ();
+
                         foreach (var file in fileEntries)
                         {
-                            VerteXYZ.GenerateFile(file);
+                            vXYZ.GenerateFile(file);
                         }
                     }
                 }
