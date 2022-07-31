@@ -26,7 +26,7 @@ namespace ModernBusinessContinuity
             Dictionary<string, GeneratedFile> files = new Dictionary<string, GeneratedFile>();
             string actionFileName = string.Empty;
 
-            string codeLang = DetectCodeLang(); // set default by choosing "" in the code langs above;
+            string codeLang = DetectCodeLang(fromFile); // set default by choosing "" in the code langs above;
             // can also be from configs or inference:
 
             var fileContents = File.ReadAllText(fromFile);
