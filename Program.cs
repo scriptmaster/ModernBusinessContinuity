@@ -1,4 +1,5 @@
-﻿using System.Text.Json;
+﻿using System.Text;
+using System.Text.Json;
 
 namespace ModernBusinessContinuity
 {
@@ -7,6 +8,8 @@ namespace ModernBusinessContinuity
         static Config config;
         static void Main(string[] args)
         {
+            Console.OutputEncoding = Encoding.UTF8;
+
             string configFile;
             if (args.Length > 1)
             {
@@ -30,6 +33,23 @@ namespace ModernBusinessContinuity
             {
                 var jsonText = File.ReadAllText(configFile);
                 config = JsonSerializer.Deserialize<Config>(jsonText) ?? new Config();
+
+                if(Directory.Exists(config.SourceDirs))
+                {
+                    var dirs = config.SourceDirs.Split(',', ';', ' ');
+                    foreach(var dir in dirs)
+                    {
+                        string[] fileEntries = Directory.GetFiles(dir);
+                        foreach (var file in fileEntries)
+                        {
+                            VerteXYZ.GenerateFile(file);
+                        }
+                    }
+                }
+                else
+                {
+                    Console.WriteLine("Directory does not exist: " + config.SourceDirs);
+                }
             }
             catch(Exception ex)
             {
@@ -38,6 +58,7 @@ namespace ModernBusinessContinuity
 
             Console.ReadLine();
         }
+
     }
 
     /// <summary>
