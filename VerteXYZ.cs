@@ -17,23 +17,22 @@ namespace ModernBusinessContinuity
         public string[] CodeLangArabic { get; set; } = new[] { "ع", "ا", "أ", "ل", "عربي" };
         public string[] CodeLangEnglish { get; set; } = new[] { "en" };
 
-        private string backfillFileName = "main.c";
+        private const string MAIN_FILE_NAME = "main.c";
 
         public void GenerateFile(string fromFile, string toDir)
         {
             if (!File.Exists(fromFile)) return;
 
-            Dictionary<string, GeneratedFile> files = new Dictionary<string, GeneratedFile>();
-            string actionFileName = string.Empty;
-
-            string codeLang = DetectCodeLang(fromFile); // set default by choosing "" in the code langs above;
+            var files = new Dictionary<string, GeneratedFile>();
+            var actionFileName = string.Empty;
+            var codeLang = DetectCodeLang(fromFile); // set default by choosing "" in the code langs above;
             // can also be from configs or inference:
 
             var fileContents = File.ReadAllText(fromFile);
             // var fileDir = Path.GetDirectoryName(fromFile) ?? Path.GetFullPath(".");
 
-            var html = Markdown.ToHtml(fileContents);
-            Console.WriteLine("html: " + html);
+            //var html = Markdown.ToHtml(fileContents);
+            //Console.WriteLine("html: " + html);
 
             var parsed = Markdown.Parse(fileContents);
             foreach(var span in parsed)
@@ -87,7 +86,7 @@ namespace ModernBusinessContinuity
 
                             if (string.IsNullOrEmpty(actionFileName) || !files.ContainsKey(actionFileName))
                             {
-                                actionFileName = backfillFileName;
+                                actionFileName = MAIN_FILE_NAME;
                                 files[actionFileName] = new GeneratedFile(toDir, actionFileName); // if no file was specified
                             }
 
