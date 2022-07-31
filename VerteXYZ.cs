@@ -14,7 +14,7 @@ namespace ModernBusinessContinuity
     public class VerteXYZ
     {
         public string[] CodeLangTamil { get; set; } = new[] { "அ", "த" };
-        public string[] CodeLangArabic { get; set; } = new[] { "ع", "ا", "أ", "عربي" };
+        public string[] CodeLangArabic { get; set; } = new[] { "ع", "ا", "أ", "ل", "عربي" };
         public string[] CodeLangEnglish { get; set; } = new[] { "en" };
 
         private string backfillFileName = "main.c";
@@ -94,12 +94,23 @@ namespace ModernBusinessContinuity
                         break;
                 }
             }
+
+            foreach (var kv in files)
+            {
+                kv.Value.WriteAllText();
+            }
         }
 
         public string DetectCodeLang(string fileName)
         {
-            if (this.CodeLangTamil.Where(ext => fileName.EndsWith("." + ext) || fileName.EndsWith("." + ext + ".md")).Count() > 0) return this.CodeLangTamil[0];
-            if (this.CodeLangArabic.Where(ext => fileName.EndsWith("." + ext) || fileName.EndsWith("." + ext + ".md")).Count() > 0) return this.CodeLangArabic[0];
+            if (this.CodeLangTamil.Where(ext => 
+                fileName.EndsWith("." + ext) ||
+                    fileName.EndsWith(ext + ".md")
+              ).Count() > 0) return this.CodeLangTamil[0];
+            if (this.CodeLangArabic.Where(ext =>
+                fileName.EndsWith("." + ext) || 
+                    fileName.EndsWith(ext + ".md")
+              ).Count() > 0) return this.CodeLangArabic[0];
             return string.Empty;
         }
 
@@ -107,11 +118,13 @@ namespace ModernBusinessContinuity
         {
             if(this.CodeLangTamil.Contains(fromLang))
             {
-                return $"//{this.CodeLangTamil[0]}: {code}";
+                return code;
+                // return $"//{this.CodeLangTamil[0]}: {code}";
             }
             else if (this.CodeLangArabic.Contains(fromLang))
             {
-                return $"//{this.CodeLangArabic[0]}: {code}";
+                return code;
+                // return $"{code} //{this.CodeLangArabic[0]}";
             }
             else
             {
@@ -151,7 +164,7 @@ namespace ModernBusinessContinuity
                 // if (File.Exists(FileName)) File.Move(FileName, );
                 // overwrite than move - you can always regenerate on a different dir
                 // File.WriteAllText(FileName, string.Empty);
-                Content = new StringBuilder(genCode, 1024); // 1KB
+                Content = new StringBuilder(1024); // 1KB
                 Action = "append";
             }
 
