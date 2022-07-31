@@ -1,2 +1,2 @@
-LICENSE: Proprietary 2022 LICENSE. All Commercial uses should be compensated monetarily.
+LICENSE: Proprietary LICENSE. 2008-2026. All Commercial uses should be compensated monetarily.
 Owner: M Sheriff
