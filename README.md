@@ -44,23 +44,20 @@ We check if cli was given with args or not.
 	server_start(s);
 ```
 
-
+If you want to add some debugging at the start
 ```
-    ...last
-	return EXIT_SUCCESS;
-```
-
-
-```first
+...first
 #ifdef DEBUG
 	printf("Starting kingdom\n");
 #endif
 ```
 
-We include stdlib and server.h
+If you like to include stdlib and server.h
+
 ```include
 "server.h"
 <stdlib.h>
 ```
 
-This generated some files in build/
+Generates build/
+
