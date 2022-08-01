@@ -19,7 +19,7 @@ Inventor: M Sheriff <msheriffusa@gmail.com> (PATENT PENDING)., PROPRIETARY LICEN
 + Academia is implied with .md files. Focus towards business productivity, in YOUR native language. Empower individuals.
 + Maybe replace nodejs, bun, deno, etc., in your "native" language, really!!
 + More languages support: French, Spanish, Hindi, Hungarian and German
-+ More support: AndroidX, .NET7/MVC
++ More support: AndroidX, .NET7/MVC, VS Code SyntaxHighlighting and Debugging
 
 Let us now create `main.c` (how many decades it has been, for me 2):
 
