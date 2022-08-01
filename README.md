@@ -64,3 +64,12 @@ add ```include md code
 
 Generates build/
 
+
+## Sample Real World Apps
+
+1. SurveyMonk: மலக்குரங்
+2. ShutItHush: பேச்சாபேசுர
+3. Confidential: UseDentalFloss, பல்வலிக்கு லவங்கபட்டைஇலை
+4. Thread10: பயந்தபந்து
+5. Nimbleness: முட்டா
+6. Singletonne: ஒருவன்ஒருவன்முதல்வன்

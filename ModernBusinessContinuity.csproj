@@ -20,4 +20,11 @@
     <PackageReference Include="Markdig.Signed" Version="0.30.2" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="lang\fr\" />
+    <Folder Include="lang\es\" />
+    <Folder Include="lang\hi\" />
+    <Folder Include="lang\hu\" />
+  </ItemGroup>
+
 </Project>
