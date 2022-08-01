@@ -5,18 +5,18 @@
 
 ## POWERFUL SPECIFICATIONS
 
-You can now create Full Stack Apps in pure "Tamil" or "Arabi", writing markdown files only. Langs contributors welcome.
-Inventor: M Sheriff <msheriffusa@gmail.com>
+You can now create Full Stack Apps in pure "Tamil" or "Arabi", writing markdown files only. (Lang contributors welcome)
+Inventor: M Sheriff <msheriffusa@gmail.com> (PATENT PENDING)., PROPRIETARY LICENSE. Commercial Subscriptions allowed in Premium.
 
 ### Innovative Design goals:
 + Generates WebSites, WebAPI, Android, WebChats, Marketing pages, React, File uploads and downloads
-+ Authentication, Middlewares, OpenAPI specs.
++ Authentication, Middlewares, OpenAPI specs, DB Connections, Logging, Dashboards.
 + Within Top 10 TechEmpower Results
 + Generates multiple .c files from single markdown
 + Efficient, modern code for production and business
 + Support Makefiles, gcc, cl (Clang for macosx contributor required)
 + On par with nginx and apache
-+ Academia is implied with .md files
++ Academia is implied with .md files. Focus towards business productivity, in YOUR native language. Empower individuals.
 + Maybe replace nodejs, bun, deno, etc., in your "native" language, really!!
 + More languages support: French, Spanish, Hindi, Hungarian and German
 + More support: AndroidX, .NET7/MVC
