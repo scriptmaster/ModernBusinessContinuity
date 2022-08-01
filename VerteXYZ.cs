@@ -17,7 +17,7 @@ namespace ModernBusinessContinuity
         public string[] CodeLangArabic { get; set; } = new[] { "ع", "ا", "أ", "ل", "عربي" };
         public string[] CodeLangEnglish { get; set; } = new[] { "en" };
 
-        private const string MAIN_FILE_NAME = "main.c";
+        private const string MAIN_C = "main.c";
 
         public void GenerateFile(string fromFile, string toDir)
         {
@@ -79,19 +79,21 @@ namespace ModernBusinessContinuity
                         foreach (var line in fencedCodeBlock.Lines)
                         {
                             if (line == null || string.IsNullOrEmpty(line.ToString() ?? string.Empty)) continue;
-                            var codeLine = (line.ToString() ?? string.Empty).Trim();
 
-                            if (string.IsNullOrEmpty(codeLine)) continue;
+                            var codeLine = line.ToString() ?? string.Empty;
+                            if (string.IsNullOrEmpty(codeLine.Trim())) continue;
+
                             Console.WriteLine("Code Line: " + codeLine);
 
                             if (string.IsNullOrEmpty(actionFileName) || !files.ContainsKey(actionFileName))
                             {
-                                actionFileName = MAIN_FILE_NAME;
-                                files[actionFileName] = new GeneratedFile(toDir, actionFileName); // if no file was specified
+                                // if no file was specified, take main.c
+                                actionFileName = MAIN_C;
+                                files[actionFileName] = new GeneratedFile(toDir, actionFileName);
                             }
 
-                            var genCode = ParseLang(codeLang, files[actionFileName], codeLine);
-                            files[actionFileName].doAction(genCode);
+                            var genCode = GenLang(codeLang, files[actionFileName], codeLine);
+                            files[actionFileName].doAction(genCode, fencedCodeBlock.Info);
                         }
                         break;
                 }
@@ -116,9 +118,11 @@ namespace ModernBusinessContinuity
             return string.Empty;
         }
 
-        public string ParseLang(string fromLang, GeneratedFile toLangFileContext, string code)
+        public string GenLang(string fromLang, GeneratedFile toLangFileContext, string code)
         {
-            if(this.CodeLangTamil.Contains(fromLang))
+            string generateLang = "//" + code;
+
+            if (this.CodeLangTamil.Contains(fromLang))
             {
                 return code;
                 // return $"//{this.CodeLangTamil[0]}: {code}";
@@ -155,12 +159,22 @@ namespace ModernBusinessContinuity
         public string FileName { get; set; } = string.Empty;
         public string Action { get; set; } = "create";
         public StringBuilder Content { get; set; } = new StringBuilder();
+        public string Include { get; set; } = string.Empty;
+        public string First { get; set; } = string.Empty;
+        public string Last { get; set; } = string.Empty;
 
         // public string Lang { get; set; } = "c"; // c18
 
-
-        public void doAction(string genCode)
+        public void doAction(string genCode, string info)
         {
+            if(!string.IsNullOrEmpty(info))
+            {
+                if (info == "include") Include += (genCode.StartsWith("#") ? string.Empty : "#include ") + genCode + Environment.NewLine; // string.Join(Environment.NewLine, genCode.Trim().Split(Environment.NewLine).Select(inc => (inc.StartsWith("#")? string.Empty: "#include ") + inc).ToArray());
+                if (info == "first") First += genCode + Environment.NewLine;
+                if (info == "last") Last += genCode + Environment.NewLine;
+                return;
+            }
+
             if(Action == "create")
             {
                 Content = new StringBuilder(1024); // 1KB
@@ -179,6 +193,8 @@ namespace ModernBusinessContinuity
 
         public void WriteAllText()
         {
+            Content.Insert(0, Include + Environment.NewLine + (string.IsNullOrEmpty(First)? string.Empty: First + Environment.NewLine));
+            if (!string.IsNullOrEmpty(Last)) Content.Append(Environment.NewLine + Last);
             File.WriteAllText(Path.Join(Directory, FileName), Content.ToString());
         }
     }

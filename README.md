@@ -3,11 +3,25 @@
 வணக்கம்
 ---
 
-### POWERFUL SPECIFICATIONS
+## POWERFUL SPECIFICATIONS
 
-The main program should start with seyals.
+You can now create Full Stack Apps in pure "Tamil" or "Arabi", writing markdown files only. Langs contributors welcome.
+Inventor: M Sheriff <msheriffusa@gmail.com>
 
-We will `create main.c` from:
+### Innovative Design goals:
++ Generates WebSites, WebAPI, Android, WebChats, Marketing pages, React, File uploads and downloads
++ Authentication, Middlewares, OpenAPI specs.
++ Within Top 10 TechEmpower Results
++ Generates multiple .c files from single markdown
++ Efficient, modern code for production and business
++ Support Makefiles, gcc, cl (Clang for macosx contributor required)
++ On par with nginx and apache
++ Academia is implied with .md files
++ Maybe replace nodejs, bun, deno, etc., in your "native" language, really!!
++ More languages support: French, Spanish, Hindi, Hungarian and German
++ More support: AndroidX, .NET7/MVC
+
+Let us now create `main.c` (how many decades it has been, for me 2):
 
 ```
 முதல் செயல்
@@ -40,11 +54,13 @@ If you want to add conditionals at the start
 #endif
 ```
 
-If you like to include stdlib and server.h
+If you like to include stdlib and engine.h
 
+add ```include md code
 ```include
-"server.h"
+"engine.h"
 <stdlib.h>
 ```
 
 Generates build/
+

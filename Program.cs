@@ -5,7 +5,7 @@ namespace ModernBusinessContinuity
 {
     public class Program
     {
-        static Config config;
+        static Config config = new Config();
         static void Main(string[] args)
         {
             Console.OutputEncoding = Encoding.UTF8;
@@ -23,7 +23,6 @@ namespace ModernBusinessContinuity
             if (!File.Exists(configFile))
             {
                 Console.WriteLine("Creating default config file");
-                config = new Config();
 
                 var writeNewConfig = JsonSerializer.Serialize<Config>(config);
                 File.WriteAllText(configFile, writeNewConfig);
@@ -34,14 +33,14 @@ namespace ModernBusinessContinuity
                 var jsonText = File.ReadAllText(configFile);
                 config = JsonSerializer.Deserialize<Config>(jsonText) ?? new Config();
 
-                if(Directory.Exists(config.SourceDirs))
+                var dirs = config.SourceDirs.Split(',', ';', ' ');
+                config.BuildDir = Path.GetFullPath(config.BuildDir);
+
+                if (!Directory.Exists(config.BuildDir)) Directory.CreateDirectory(config.BuildDir);
+
+                foreach (var dir in dirs)
                 {
-                    var dirs = config.SourceDirs.Split(',', ';', ' ');
-                    config.BuildDir = Path.GetFullPath(config.BuildDir);
-
-                    if (!Directory.Exists(config.BuildDir)) Directory.CreateDirectory(config.BuildDir);
-
-                    foreach (var dir in dirs)
+                    if (Directory.Exists(config.SourceDirs))
                     {
                         string[] fileEntries = Directory.GetFiles(dir);
                         var vXYZ = new VerteXYZ();
@@ -51,13 +50,13 @@ namespace ModernBusinessContinuity
                             vXYZ.GenerateFile(file, config.BuildDir);
                         }
                     }
-                }
-                else
-                {
-                    Console.WriteLine("Directory does not exist: " + config.SourceDirs);
+                    else
+                    {
+                        Console.WriteLine("Source Directory error: " + config.SourceDirs);
+                    }
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
                 // 
             }
