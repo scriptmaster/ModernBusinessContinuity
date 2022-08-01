@@ -1,12 +1,12 @@
-﻿using Markdig;
-using Markdig.Syntax;
-using Markdig.Syntax.Inlines;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
+using Markdig;
+using Markdig.Syntax;
+using Markdig.Syntax.Inlines;
 
 namespace ModernBusinessContinuity
 {
@@ -25,11 +25,9 @@ namespace ModernBusinessContinuity
 
             var files = new Dictionary<string, GeneratedFile>();
             var actionFileName = string.Empty;
-            var codeLang = DetectCodeLang(fromFile); // set default by choosing "" in the code langs above;
-            // can also be from configs or inference:
+            var codeLang = DetectCodeLang(fromFile);
 
             var fileContents = File.ReadAllText(fromFile);
-            // var fileDir = Path.GetDirectoryName(fromFile) ?? Path.GetFullPath(".");
 
             //var html = Markdown.ToHtml(fileContents);
             //Console.WriteLine("html: " + html);
@@ -93,7 +91,7 @@ namespace ModernBusinessContinuity
                             }
 
                             var genCode = GenLang(codeLang, files[actionFileName], codeLine);
-                            files[actionFileName].doAction(genCode, fencedCodeBlock.Info);
+                            files[actionFileName].doAction(genCode, fencedCodeBlock.Info ?? String.Empty);
                         }
                         break;
                 }
