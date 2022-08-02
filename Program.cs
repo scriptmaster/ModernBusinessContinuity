@@ -70,6 +70,6 @@ namespace ModernBusinessContinuity
     {
         public string SourceDirs { get; set; } = "src/";
         public string BuildDir { get; set; } = "build/";
-        public string main { get; set; } = "முதல்.அ.md";
+        public string main { get; set; } = "main.md";
     }
 }

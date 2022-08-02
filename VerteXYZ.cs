@@ -7,13 +7,14 @@ using System.Threading.Tasks;
 using Markdig;
 using Markdig.Syntax;
 using Markdig.Syntax.Inlines;
+using ModernBusinessContinuity.lang;
 
 namespace ModernBusinessContinuity
 {
     // Proprietary LICENSE: https://github.com/scriptmaster/ModernBusinessContinuity/commits/master
     public class VerteXYZ
     {
-        public string[] CodeLangTamil { get; set; } = new[] { "அ", "த" };
+        public string[] CodeLangTamil { get; set; } = new[] { "அ", "ல்", "த", "மி", "ழ்"};
         public string[] CodeLangArabic { get; set; } = new[] { "ع", "ا", "أ", "ل", "عربي" };
         public string[] CodeLangEnglish { get; set; } = new[] { "en" };
 
@@ -81,7 +82,7 @@ namespace ModernBusinessContinuity
                             var codeLine = line.ToString() ?? string.Empty;
                             if (string.IsNullOrEmpty(codeLine.Trim())) continue;
 
-                            Console.WriteLine("Code Line: " + codeLine);
+                            Console.WriteLine("FencedCodeBlock: " + codeLine);
 
                             if (string.IsNullOrEmpty(actionFileName) || !files.ContainsKey(actionFileName))
                             {
@@ -90,8 +91,16 @@ namespace ModernBusinessContinuity
                                 files[actionFileName] = new GeneratedFile(toDir, actionFileName);
                             }
 
-                            var genCode = GenLang(codeLang, files[actionFileName], codeLine);
-                            files[actionFileName].doAction(genCode, fencedCodeBlock.Info ?? String.Empty);
+                            if(codeLang.IsInclude(fencedCodeBlock.Info))
+                            {
+                                var genCode = Include(codeLang, files[actionFileName], codeLine);
+                                files[actionFileName].doAction(genCode, fencedCodeBlock.Info ?? string.Empty);
+                            }
+                            else
+                            {
+                                var genCode = GenLang(codeLang, files[actionFileName], codeLine);
+                                files[actionFileName].doAction(genCode, String.Empty);
+                            }
                         }
                         break;
                 }
@@ -103,39 +112,35 @@ namespace ModernBusinessContinuity
             }
         }
 
-        public string DetectCodeLang(string fileName)
+        public EveryIntrinsic DetectCodeLang(string fileName)
         {
-            if (this.CodeLangTamil.Where(ext => 
+            if (this.CodeLangTamil.Where(ext =>
                 fileName.EndsWith("." + ext) ||
                     fileName.EndsWith(ext + ".md")
-              ).Count() > 0) return this.CodeLangTamil[0];
+              ).Count() > 0) return lang.ta.Intrinsic.Instance; // this.CodeLangTamil[0];
             if (this.CodeLangArabic.Where(ext =>
                 fileName.EndsWith("." + ext) || 
                     fileName.EndsWith(ext + ".md")
-              ).Count() > 0) return this.CodeLangArabic[0];
-            return string.Empty;
+              ).Count() > 0) return lang.ar.Intrinsic.Instance; // this.CodeLangArabic[0];
+            return lang.en.Intrinsic.Instance;
         }
 
-        public string GenLang(string fromLang, GeneratedFile toLangFileContext, string code)
+        public string GenLang(EveryIntrinsic fromLang, GeneratedFile toLangFileContext, string code)
         {
-            string generateLang = "//" + code;
-
-            if (this.CodeLangTamil.Contains(fromLang))
-            {
-                return code;
-                // return $"//{this.CodeLangTamil[0]}: {code}";
-            }
-            else if (this.CodeLangArabic.Contains(fromLang))
-            {
-                return code;
-                // return $"{code} //{this.CodeLangArabic[0]}";
-            }
-            else
-            {
-                return code;
-            }
+            string gen = "//" + code;
+            // ...must await
+            return gen;
         }
+
+        public string Include(EveryIntrinsic fromLang, GeneratedFile toLangFileContext, string code)
+        {
+            string gen = fromLang.Include(code);
+            if (string.IsNullOrEmpty(gen)) return "// " + code;
+            return gen;
+        }
+
     }
+
 
     public class GeneratedFile
     {
@@ -167,7 +172,11 @@ namespace ModernBusinessContinuity
         {
             if(!string.IsNullOrEmpty(info))
             {
-                if (info == "include") Include += (genCode.StartsWith("#") ? string.Empty : "#include ") + genCode + Environment.NewLine; // string.Join(Environment.NewLine, genCode.Trim().Split(Environment.NewLine).Select(inc => (inc.StartsWith("#")? string.Empty: "#include ") + inc).ToArray());
+                if (info == "include")
+                {
+                    // Include += (genCode.StartsWith("#") ? string.Empty : "#include ") + genCode + Environment.NewLine;
+                    Include += genCode + Environment.NewLine;
+                }
                 if (info == "first") First += genCode + Environment.NewLine;
                 if (info == "last") Last += genCode + Environment.NewLine;
                 return;
