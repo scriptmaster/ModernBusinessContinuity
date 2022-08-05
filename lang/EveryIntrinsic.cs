@@ -19,6 +19,8 @@ namespace ModernBusinessContinuity.lang
             { "include:unistd", () => "#include <unistd.h>" },
             { "include:unix", () => "#include <unistd.h>" },
 
+            { "include:event", () => "#include <event.h>" },
+
             //{ "include:iostream", () => "#include <iostream>" },//cpp//
             //Add java imports, C# usings etc.
         };
@@ -67,7 +69,7 @@ namespace ModernBusinessContinuity.lang
             else
             {
                 Console.WriteLine("Include does not exist: " + inc);
-                return string.Empty;
+                return i.StartsWith("#") ? i : String.Empty;
             }
         }
 
@@ -78,15 +80,16 @@ namespace ModernBusinessContinuity.lang
             return i == "#" || i == "i" || i == "inc" || i == "include";
         }
 
-
         internal void Funword(string funWord)
         {
             keywords.Add("funword:" + funWord, () => string.Empty);
         }
 
-        internal void MoreFunwords()
+        internal void EnFunwords()
         {
             // ["fun", "function", "proc", "procedure"];
+            Funword("action");
+            Funword("task");
             Funword("fun");
             Funword("function");
             Funword("proc");
@@ -94,3 +97,4 @@ namespace ModernBusinessContinuity.lang
         }
     }
 }
+

@@ -22,6 +22,8 @@ namespace ModernBusinessContinuity.lang.ta
             POSIX("லினக்ஸ்"); POSIX("யுனிக்ஸ்"); POSIX("போசிக்ஸ்"); POSIX("பொசிக்ஸ்");
             // ...
             Funword("செயல்"); // Keyword is Funword, Key opens, Fun continues
+            // Enable English Function words
+            EnFunwords();
         }
     }
 }

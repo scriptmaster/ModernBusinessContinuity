@@ -32,6 +32,7 @@ namespace ModernBusinessContinuity
 
             //var html = Markdown.ToHtml(fileContents);
             //Console.WriteLine("html: " + html);
+            var extCreate = new Regex("^\\w+\\.(c|h|cs|java|html|js|json|css)$", RegexOptions.IgnoreCase);
 
             var parsed = Markdown.Parse(fileContents);
             foreach(var span in parsed)
@@ -50,13 +51,12 @@ namespace ModernBusinessContinuity
                                 var content = (line as CodeInline)?.Content.Trim() ?? string.Empty;
                                 Console.WriteLine("Check command: " + content);
 
-                                if(content.EndsWith(".c") || content.EndsWith(".cs"))
+                                if(extCreate.IsMatch(content))
                                 {
                                     var cmd = content.Split(' ');
                                     var fileName = cmd[cmd.Length - 1];
                                     var action = cmd.Length > 1 ? cmd[0] : "append";
 
-                                    if (!Regex.IsMatch(fileName, "^\\w+.c[s]?$")) continue;
                                     actionFileName = fileName;
 
                                     if (string.IsNullOrEmpty(actionFileName) || !files.ContainsKey(actionFileName))
@@ -75,6 +75,8 @@ namespace ModernBusinessContinuity
                         var fencedCodeBlock = span as FencedCodeBlock ?? default; // segfault
                         if (fencedCodeBlock == null || fencedCodeBlock.Lines.Count <= 0) continue;
 
+                        var isInclude = codeLang.IsInclude(fencedCodeBlock.Info);
+
                         foreach (var line in fencedCodeBlock.Lines)
                         {
                             if (line == null || string.IsNullOrEmpty(line.ToString() ?? string.Empty)) continue;
@@ -91,15 +93,15 @@ namespace ModernBusinessContinuity
                                 files[actionFileName] = new GeneratedFile(toDir, actionFileName);
                             }
 
-                            if(codeLang.IsInclude(fencedCodeBlock.Info))
+                            if(isInclude)
                             {
                                 var genCode = Include(codeLang, files[actionFileName], codeLine);
-                                files[actionFileName].doAction(genCode, fencedCodeBlock.Info ?? string.Empty);
+                                files[actionFileName].doAction(genCode, "include");
                             }
                             else
                             {
-                                var genCode = GenLang(codeLang, files[actionFileName], codeLine);
-                                files[actionFileName].doAction(genCode, String.Empty);
+                                var genCode = fencedCodeBlock.Info=="c"? codeLine: GenLang(codeLang, files[actionFileName], codeLine);
+                                files[actionFileName].doAction(genCode, fencedCodeBlock.Info ?? string.Empty);
                             }
                         }
                         break;
@@ -125,10 +127,10 @@ namespace ModernBusinessContinuity
             return lang.en.Intrinsic.Instance;
         }
 
-        public string GenLang(EveryIntrinsic fromLang, GeneratedFile toLangFileContext, string code)
+        public string GenLang(EveryIntrinsic fromLang, GeneratedFile toLangFileContext, string codeLine)
         {
-            string gen = "//" + code;
-            // ...must await
+            string gen = "//" + codeLine;
+            // ...
             return gen;
         }
 
@@ -172,14 +174,14 @@ namespace ModernBusinessContinuity
         {
             if(!string.IsNullOrEmpty(info))
             {
-                if (info == "include")
+                if (info == "include" || info == "#" || info == "i") // isInlude?
                 {
                     // Include += (genCode.StartsWith("#") ? string.Empty : "#include ") + genCode + Environment.NewLine;
                     Include += genCode + Environment.NewLine;
                 }
                 if (info == "first") First += genCode + Environment.NewLine;
                 if (info == "last") Last += genCode + Environment.NewLine;
-                return;
+                if (info != "c" && info != "raw") return;
             }
 
             if(Action == "create")

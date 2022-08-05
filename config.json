@@ -1,4 +1,5 @@
 {
   "SourceDirs": "src/",
-  "main": "முதல்.md"
+  "main": "முதல்.md",
+  "only": "hive.md"
 }

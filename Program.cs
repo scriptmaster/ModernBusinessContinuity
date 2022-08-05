@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using System.Text.Json;
+using System.Text.RegularExpressions;
 
 namespace ModernBusinessContinuity
 {
@@ -35,19 +36,23 @@ namespace ModernBusinessContinuity
 
                 var dirs = config.SourceDirs.Split(',', ';', ' ');
                 config.BuildDir = Path.GetFullPath(config.BuildDir);
+                var matchRegex = new Regex(!string.IsNullOrEmpty(config.only)? config.only: ".+\\.md", RegexOptions.IgnoreCase);
 
                 if (!Directory.Exists(config.BuildDir)) Directory.CreateDirectory(config.BuildDir);
 
                 foreach (var dir in dirs)
                 {
-                    if (Directory.Exists(config.SourceDirs))
+                    if (Directory.Exists(dir))
                     {
                         string[] fileEntries = Directory.GetFiles(dir);
                         var vXYZ = new VerteXYZ();
 
                         foreach (var file in fileEntries)
                         {
-                            vXYZ.GenerateFile(file, config.BuildDir);
+                            if (matchRegex.IsMatch(file))
+                            {
+                                vXYZ.GenerateFile(file, config.BuildDir);
+                            }
                         }
                     }
                     else
@@ -71,5 +76,6 @@ namespace ModernBusinessContinuity
         public string SourceDirs { get; set; } = "src/";
         public string BuildDir { get; set; } = "build/";
         public string main { get; set; } = "main.md";
+        public string only { get; set; } = String.Empty;
     }
 }

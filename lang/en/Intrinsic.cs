@@ -19,7 +19,7 @@ namespace ModernBusinessContinuity.lang.en
             //Standard("", "");
             //POSIX("");
             // ...
-            //Funword(""); // Keyword is Funword, Key opens, Fun continues
+            EnFunwords(); // Keyword is Funword, Key opens, Fun continues
         }
     }
 }
