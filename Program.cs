@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using ModernBusinessContinuity.lang;
+using System.Text;
 using System.Text.Json;
 using System.Text.RegularExpressions;
 
@@ -63,7 +64,7 @@ namespace ModernBusinessContinuity
             }
             catch (Exception ex)
             {
-                // 
+                Console.Write(ex.Message + Environment.NewLine + ex.StackTrace + Environment.NewLine);
             }
         }
     }
